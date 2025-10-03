@@ -51,7 +51,7 @@ goto END_ACTION
 :DOCKER_RESTART
 cls
 echo.
-echo Running: docker compose down && docker compose up...
+echo Running: docker compose down and docker compose up...
 echo.
 docker compose down && docker compose up
 goto END_ACTION
