@@ -1,2 +1,2 @@
 export const AUTH_SERVICE = 'auth';
-export const USER_SERVICE = 'user';
+export const PAYMENTS_SERVICE = 'payments';

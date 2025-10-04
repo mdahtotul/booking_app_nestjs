@@ -49,6 +49,31 @@ services:
       - CHOKIDAR_INTERVAL=1000
       - WATCHPACK_POLLING=true
 
+  payments:
+    # Build using the 'development' target from the Dockerfile
+    build:
+      context: .
+      dockerfile: ./apps/payments/Dockerfile
+      target: development # Targets the stage with dev dependencies needed for 'start:dev'
+
+    # This command runs your application in development mode with the Nest CLI
+    command: pnpm run start:dev payments
+    env_file:
+      - ./apps/payments/.env
+
+    ports:
+      - '3003:3003'
+
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+    environment:
+      # 👇 force NestJS file watcher to use polling (fixes hot-reload on Windows)
+      - CHOKIDAR_USEPOLLING=true
+      - CHOKIDAR_INTERVAL=1000
+      - WATCHPACK_POLLING=true
+
   mongo:
     image: mongo
     ports:
