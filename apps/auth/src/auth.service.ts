@@ -29,7 +29,4 @@ export class AuthService {
       expires,
     });
   }
-  getHello(): string {
-    return 'Hello World!';
-  }
 }

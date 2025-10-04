@@ -6,9 +6,14 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { TokenPayload } from '../interfaces/token-payload.interface';
 import { UsersService } from '../users/users.service';
 
+interface RPCRequest extends Request {
+  Authentication?: string;
+}
+
 interface JwtRequest extends Request {
+  Authentication?: string;
   cookies: {
-    Authentication: string;
+    Authentication?: string;
   };
 }
 
@@ -20,7 +25,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
-        (request: JwtRequest) => request?.cookies?.Authentication,
+        (request: RPCRequest | JwtRequest) => {
+          return (
+            request?.Authentication ||
+            (request?.cookies?.Authentication as string)
+          );
+        },
       ]),
       secretOrKey: configService.getOrThrow<string>('JWT_SECRET'),
     });
