@@ -1,4 +1,4 @@
-import { PaymentIntentDto, PAYMENTS_SERVICE } from '@app/common';
+import { PaymentIntentDto, PAYMENTS_SERVICE, UserDto } from '@app/common';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
@@ -12,9 +12,15 @@ export class ReservationsService {
     private readonly reservationsRepository: ReservationsRepository,
     @Inject(PAYMENTS_SERVICE) private readonly paymentsClient: ClientProxy,
   ) {}
-  async create(createReservationDto: CreateReservationDto, userId: string) {
+  async create(
+    createReservationDto: CreateReservationDto,
+    { email, _id: userId }: UserDto,
+  ) {
     const res: PaymentIntentDto = await lastValueFrom(
-      this.paymentsClient.send('create_charge', createReservationDto.charge),
+      this.paymentsClient.send('create_charge', {
+        ...createReservationDto.charge,
+        email,
+      }),
     );
 
     return await this.reservationsRepository.create({

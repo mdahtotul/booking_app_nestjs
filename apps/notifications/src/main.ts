@@ -2,10 +2,10 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { Transport } from '@nestjs/microservices';
 import { Logger } from 'nestjs-pino';
-import { PaymentsModule } from './payments.module';
+import { NotificationsModule } from './notifications.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(PaymentsModule);
+  const app = await NestFactory.create(NotificationsModule);
   const configService = app.get(ConfigService);
   const port = configService.getOrThrow<string>('PORT');
 
@@ -20,7 +20,7 @@ async function bootstrap() {
   app.useLogger(app.get(Logger));
   await app.startAllMicroservices();
 
-  console.log(`🚨 Payment microservice is running on TCP port:${port}`);
+  console.log(`🚨 Notification microservice is running on TCP port:${port}`);
 }
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 bootstrap();
