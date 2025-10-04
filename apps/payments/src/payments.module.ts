@@ -14,6 +14,7 @@ import { PaymentsService } from './payments.service';
         // HTTP_PORT: Joi.number().required(),
         PORT: Joi.number().required(),
         STRIPE_SECRET_KEY: Joi.string().required(),
+        STRIPE_ACCOUNT_ID: Joi.string().required(),
       }),
     }),
     LoggerModule,

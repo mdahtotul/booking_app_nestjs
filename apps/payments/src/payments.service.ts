@@ -5,36 +5,37 @@ import Stripe from 'stripe';
 
 @Injectable()
 export class PaymentsService {
-  constructor(private readonly configService: ConfigService) {}
-
-  get stripe(): Stripe {
-    if (!this._stripe) {
-      this._stripe = new Stripe(
-        this.configService.getOrThrow<string>('STRIPE_SECRET_KEY'),
-        {
-          apiVersion: '2025-09-30.clover',
-        },
-      );
-    }
-    return this._stripe;
+  private stripe: Stripe | null = null;
+  constructor(private readonly configService: ConfigService) {
+    this.stripe = new Stripe(
+      this.configService.getOrThrow<string>('STRIPE_SECRET_KEY'),
+      {
+        apiVersion: '2025-09-30.clover',
+      },
+    );
   }
 
-  private _stripe: Stripe | null = null;
-
   async createCharge({ card, amount }: CreateChargeDto) {
-    const paymentMethod = await this._stripe?.paymentMethods.create({
-      type: 'card',
-      card,
-    });
+    let paymentMethod: Stripe.PaymentMethod | undefined = undefined;
+    try {
+      paymentMethod = await this.stripe?.paymentMethods.create({
+        type: 'card',
+        card,
+      });
+    } catch (err) {
+      console.log(err);
+    }
 
-    const paymentIntent = await this._stripe?.paymentIntents.create({
-      payment_method: paymentMethod?.id,
+    // for test payment_method = pm_card_visa
+
+    const paymentIntent = await this.stripe?.paymentIntents.create({
+      payment_method: paymentMethod?.id || 'pm_card_visa',
       amount: amount * 100,
       confirm: true,
       payment_method_types: ['card'],
       currency: 'usd',
     });
-
+    console.log('👀 payments.service:37', paymentIntent);
     return paymentIntent;
   }
 }

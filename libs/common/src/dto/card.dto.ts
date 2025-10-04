@@ -26,21 +26,24 @@ export class NetworksDto {
 }
 
 export class CardDto {
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  cvc: string;
+  cvc?: string;
 
+  @IsOptional()
   @IsInt()
   @Min(1)
   @Max(12)
-  exp_month: number;
+  exp_month?: number;
 
+  @IsOptional()
   @IsInt()
   @Min(new Date().getFullYear())
-  exp_year: number;
+  exp_year?: number;
 
+  @IsOptional()
   @IsCreditCard()
-  number: string;
+  number?: string;
 
   @IsOptional()
   @IsString()
